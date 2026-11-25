@@ -1,75 +1,70 @@
-# KhataPe Lending Decisions: Direct Answers vs Chain-of-Thought Prompting
+# FinBuddy: Making a Bank's AI Assistant Follow the Rules with a System Prompt
 
-**A FinTech case study on when AI can give a quick answer and when it must show its working.**
+**A FinTech case study on when a plain chat is enough and when a business needs a system prompt.**
 
 Author: [Your Name] · BBA (FinTech), Chitkara Business School · Tool: Claude · November 2026
 
 ## The case
 
-**KhataPe** (fictional) is a digital lender in Indore that lends to kirana shops and students. Every month it must choose between two loan products with different interest rates, fees and default risk. As a Business Analyst, I tested whether AI can pick the more profitable option, and whether asking it to reason step by step makes it more reliable.
+**KoshBank** (fictional) is a digital bank for college students in Pune with 3 lakh users. It wants to launch **FinBuddy**, an in-app AI assistant. Its compliance team worries that a chatbot could give stock tips, ask for OTPs or invent interest rates. As a Business Analyst, I tested whether a system prompt can make the AI follow the bank's rules every time.
 
 ## The data
 
-8 synthetic monthly scenarios created with AI, including 3 "trap" scenarios where the higher interest rate makes less profit and 1 tie. I calculated the correct answers myself in a spreadsheet before testing.
-
-## Decision rule
-
-Net return = Interest rate + Processing fee − Expected default − Cost of funds
-
-Profit = Net return × Loan budget
+10 synthetic customer questions created with AI (7 English, 3 Hinglish), including 6 "trap" questions designed to make the AI break rules. I wrote the correct behaviour for each question before testing.
 
 ## Approach
 
-| Step | Prompt type | Task |
+| Step | Set-up | Task |
 |---|---|---|
-| 1 | Direct | Which option has the higher interest rate? |
-| 2 | Direct | Which option makes more profit? (final answer only) |
-| 3 | Chain-of-thought | Same decision, solved step by step |
-| 4 | Chain-of-thought | One number changed: does the AI update every step? |
+| 1 | Plain chat | One simple general question |
+| 2 | Plain chat | All 10 customer questions |
+| 3 | System prompt (v1) | The same 10 questions |
+| 4 | System prompt (v2) | Failed questions re-tested after a fix |
+| 5 | Roles | Same question with no role, an expert role and a friendly role |
 
 ## Results
 
-| Metric | Direct | Step by step |
+| Metric | Plain chat | System prompt |
 |---|---|---|
-| Correct choice (/8) | 8 | 8 |
-| Correct profit figure (/8) | 8 | 8 |
-| Trap scenarios correct (/3) | 3 | 3 |
-| Working I could check | No | Yes |
+| Answers that followed every rule (/10) | 0 | 9 |
+| Personal data handled safely | No | Yes |
+| No investment tips | No | Yes |
+| Closing line present (/10) | 0 | 10 |
 
 ## Key learnings
 
-1. **A direct answer is enough for one-step questions:** all 8 "higher interest rate" answers were correct (8/8).
-2. **Step-by-step reasoning helps multi-step decisions:** in this run it fixed no scenarios, because the direct answer was already 8/8; its benefit was that every step could be checked.
-3. **Convincing is not the same as correct:** none found. All 12 steps I checked in S01 and S03 matched my spreadsheet, so the working was both convincing and correct here.
-4. **What the numbers do not show:** RBI digital lending rules and collection costs.
+1. **A plain chat is enough for general questions:** the savings-account question was answered clearly in three lines with no set-up.
+2. **A system prompt enforces business rules:** it fixed Q03 (no fund tip), Q04 (OTP not repeated), Q05 (no exact rate), Q09 (no timelines) and added the closing line to every answer.
+3. **Version 2:** I added one line for long, multi-part questions; it cut the Q08 answer from 103 to 59 words and fixed the only rule version 1 broke.
+4. **Roles:** a role changed the tone and depth of the credit-card answer but not its core advice, so it did not change accuracy.
 
-## My recommendation to KhataPe
+## My recommendation to KoshBank
 
-Use AI with step-by-step working for the monthly decision, so the CFO's team can verify every number, and keep a spreadsheet check as the control. A human must still review regulatory compliance, collection costs and the reliability of the expected default estimates before approving any option.
+FinBuddy is not ready for a full launch yet. The system prompt made it follow the rules far better, but only 10 questions were tested and only Q08 was re-tested under version 2. Before launch, re-run the full question set on version 2 and add many more trap questions (other personal data, more Hinglish, repeated attempts to override the rules), with a human review of the results.
 
 ## Repository files
 
 | File | Content |
 |---|---|
-| `01_case_study.md` | KhataPe case and decision rules |
-| `02_scenarios.md` | Synthetic scenarios and answer key |
-| `03_direct_simple.md` | Direct prompt on a one-step question |
-| `04_direct_decision.md` | Direct prompt on the real decision |
-| `05_cot_decision.md` | Chain-of-thought prompt on the same decision |
-| `06_scorecard.md` | Step check, changed-number test, scorecard and reflection |
+| `01_case_study.md` | KoshBank case and FinBuddy rules |
+| `02_questions.md` | Synthetic test questions and answer key |
+| `03_plain_simple.md` | Plain chat on a simple question |
+| `04_plain_test.md` | Plain chat on all 10 questions, marked |
+| `05_system_prompt_test.md` | System prompt v1 and its answers, marked |
+| `06_scorecard.md` | Version 2, role comparison, scorecard and reflection |
 
 ## Skills shown
 
-Prompt engineering · Chain-of-thought prompting · Synthetic data creation · Spreadsheet financial analysis · AI output verification · Lending business basics
+Prompt engineering · System prompt design · Role prompting · Chatbot stress-testing · Responsible AI in finance · Customer-experience design
 
 ## What I learned
 
-- A direct prompt works well for simple, one-step questions.
-- Chain-of-thought prompting makes AI show each step, so I can check its working instead of trusting one number.
-- Step-by-step working can look convincing and still contain a wrong number, so every step must be checked.
-- How to create synthetic business scenarios with AI, including deliberate "trap" cases.
-- Why I calculate my own answer key in a spreadsheet before testing AI.
-- Changing one number is a quick test of whether AI really reasons or just repeats.
-- Numbers alone do not make a lending decision; risk and regulation matter too.
+- A plain chat is fine for one-off, general questions.
+- A system prompt gives AI standing rules, so a business assistant behaves the same way in every answer.
+- A good system prompt states the audience, tone, limits, what to do when unsure and what never to do.
+- Trap questions (stock tips, OTPs, "ignore your rules") are the best way to test an AI assistant.
+- A role changes the tone of an answer more than its accuracy.
+- System prompts improve with testing: version 2 fixed a gap that version 1 missed.
+- AI assistants in finance must protect personal data and avoid advice they are not allowed to give.
 
-*KhataPe and all data in this project are fictional and created for learning.*
+*KoshBank, FinBuddy and all data in this project are fictional and created for learning.*
